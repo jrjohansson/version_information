@@ -5,8 +5,7 @@ IPython magic command for showing version information for dependency modules in
 a notebook.
 
 See the
-[http://nbviewer.ipython.org/urls/raw.github.com/jrjohansson/version_information/master/example.ipynb](example notebook)
-for intallation instruction and example of how to use the '%version_information'
-magic command.
+[example notebook](http://nbviewer.ipython.org/urls/raw.github.com/jrjohansson/version_information/master/example.ipynb)
+for intallation instruction and example of how to use IPython magic command.
 
 
