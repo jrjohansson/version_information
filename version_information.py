@@ -66,8 +66,7 @@ class VersionInformation(Magics):
 
     def _repr_latex_(self):
 
-        latex = r"\begin{table}" + "\n"
-        latex += r"\begin{tabular}{|l|l|}\hline" + "\n"
+        latex = r"\begin{tabular}{|l|l|}\hline" + "\n"
         latex += r"{\bf Software} & {\bf Version} \\ \hline\hline" + "\n"
         for name, version in self.packages:
             latex += r"%s & %s \\ \hline" % (name, version) + "\n"
@@ -75,7 +74,6 @@ class VersionInformation(Magics):
         latex += r"\hline \multicolumn{2}{|l|}{%s} \\ \hline" % \
                     time.strftime('%a %b %d %H:%M:%S %Y %Z') + "\n"
         latex += r"\end{tabular}" + "\n"
-        latex += r"\end{table}" + "\n"
     
         return latex
 
