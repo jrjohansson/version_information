@@ -2,12 +2,13 @@
 An IPython extension that provides a magic command that displays
 a table with information about versions of dependency modules.
 """
-import sys
-import os
-import time
-import IPython
+import cgi
 import json
+import os
+import sys
+import time
 
+import IPython
 from IPython.core.magic import magics_class, line_magic, Magics
 
 
@@ -17,18 +18,18 @@ class VersionInformation(Magics):
     @line_magic
     def version_information(self, line=''):
         """Show information about versions of modules.
-        
+
         Usage:
-        
+
             %version_information [optional list of modules]
 
         """
         self.packages = [("Python", sys.version.replace("\n", "")),
                          ("IPython", IPython.__version__),
                          ("OS", "%s [%s]" % (os.name, sys.platform))]
-        
+
         modules = line.replace(' ', '').split(",")
-        
+
         for module in modules:
             if len(module) > 0:
                 try:
@@ -38,16 +39,16 @@ class VersionInformation(Magics):
                     self.packages.append((module, ns_l["version"]))
                 except Exception as e:
                     self.packages.append((module, str(e)))
-                    
-        return self        
+
+        return self
 
 
     def _repr_json_(self):
-
-        l = ["{ \"module\" : \"%s\", \"version\" : \"%s\" }" % (name, version)
-             for name, version in self.packages]
-
-        return "{ \"%s\" : [" % "Software versions" + ", ".join(l) + " ] }"
+        obj = {
+            'Software versions': [
+                {'module': name, 'version': version} for
+                (name, version) in self.packages]}
+        return json.dumps(obj)
 
 
     def _repr_html_(self):
@@ -55,13 +56,33 @@ class VersionInformation(Magics):
         html = "<table>"
         html += "<tr><th>Software</th><th>Version</th></tr>"
         for name, version in self.packages:
-            html += "<tr><td>%s</td><td>%s</td></tr>" % (name, version)
+            _version = cgi.escape(version)
+            html += "<tr><td>%s</td><td>%s</td></tr>" % (name, _version)
 
         html += "<tr><td colspan='2'>%s</td></tr>" % \
                     time.strftime('%a %b %d %H:%M:%S %Y %Z')
         html += "</table>"
-    
+
         return html
+
+
+    @staticmethod
+    def _latex_escape(str_):
+        CHARS = {
+            '&':  r'\&',
+            '%':  r'\%',
+            '$':  r'\$',
+            '#':  r'\#',
+            '_':  r'\letterunderscore{}',
+            '{':  r'\letteropenbrace{}',
+            '}':  r'\letterclosebrace{}',
+            '~':  r'\lettertilde{}',
+            '^':  r'\letterhat{}',
+            '\\': r'\letterbackslash{}',
+            '>':  r'\textgreater',
+            '<':  r'\textless',
+        }
+        return u"".join([CHARS.get(c, c) for c in str_])
 
 
     def _repr_latex_(self):
@@ -69,12 +90,13 @@ class VersionInformation(Magics):
         latex = r"\begin{tabular}{|l|l|}\hline" + "\n"
         latex += r"{\bf Software} & {\bf Version} \\ \hline\hline" + "\n"
         for name, version in self.packages:
-            latex += r"%s & %s \\ \hline" % (name, version) + "\n"
+            _version = self._latex_escape(version)
+            latex += r"%s & %s \\ \hline" % (name, _version) + "\n"
 
         latex += r"\hline \multicolumn{2}{|l|}{%s} \\ \hline" % \
                     time.strftime('%a %b %d %H:%M:%S %Y %Z') + "\n"
         latex += r"\end{tabular}" + "\n"
-    
+
         return latex
 
 
@@ -85,7 +107,7 @@ class VersionInformation(Magics):
             text += "%s %s\n" % (name, version)
 
         text += "\n%s" % time.strftime('%a %b %d %H:%M:%S %Y %Z')
-    
+
         pp.text(text)
 
 
