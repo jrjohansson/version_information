@@ -56,6 +56,10 @@ import time
 import IPython
 from IPython.core.magic import magics_class, line_magic, Magics
 
+import locale
+def _date_format_encoding():
+    return locale.getlocale(locale.LC_TIME)[1] or locale.getpreferredencoding()
+
 try:
     import pkg_resources
 except ImportError:
@@ -115,7 +119,7 @@ class VersionInformation(Magics):
             html += "<tr><td>%s</td><td>%s</td></tr>" % (name, _version)
 
         html += "<tr><td colspan='2'>%s</td></tr>" % \
-                    time.strftime('%a %b %d %H:%M:%S %Y %Z')
+                    time.strftime('%a %b %d %H:%M:%S %Y %Z').decode(_date_format_encoding())
         html += "</table>"
 
         return html
