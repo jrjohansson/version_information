@@ -120,10 +120,10 @@ class VersionInformation(Magics):
 
         try:
             html += "<tr><td colspan='2'>%s</td></tr>" % \
-                        time.strftime('%a %b %d %H:%M:%S %Y %Z', time.gmtime(1000000))
+                        time.strftime('%a %b %d %H:%M:%S %Y %Z')
         except:
             html += "<tr><td colspan='2'>%s</td></tr>" % \
-                        time.strftime('%a %b %d %H:%M:%S %Y %Z', time.gmtime(1000000)).decode(_date_format_encoding())
+                        time.strftime('%a %b %d %H:%M:%S %Y %Z').decode(_date_format_encoding())
         html += "</table>"
 
         return html
