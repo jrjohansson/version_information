@@ -118,8 +118,12 @@ class VersionInformation(Magics):
             _version = cgi.escape(version)
             html += "<tr><td>%s</td><td>%s</td></tr>" % (name, _version)
 
-        html += "<tr><td colspan='2'>%s</td></tr>" % \
-                    time.strftime('%a %b %d %H:%M:%S %Y %Z').decode(_date_format_encoding())
+        try:
+            html += "<tr><td colspan='2'>%s</td></tr>" % \
+                        time.strftime('%a %b %d %H:%M:%S %Y %Z', time.gmtime(1000000))
+        except:
+            html += "<tr><td colspan='2'>%s</td></tr>" % \
+                        time.strftime('%a %b %d %H:%M:%S %Y %Z', time.gmtime(1000000)).decode(_date_format_encoding())
         html += "</table>"
 
         return html
