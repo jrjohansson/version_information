@@ -156,8 +156,13 @@ class VersionInformation(Magics):
             _version = self._latex_escape(version)
             latex += r"%s & %s \\ \hline" % (name, _version) + "\n"
 
-        latex += r"\hline \multicolumn{2}{|l|}{%s} \\ \hline" % \
+        try:
+            latex += r"\hline \multicolumn{2}{|l|}{%s} \\ \hline" % \
                     time.strftime('%a %b %d %H:%M:%S %Y %Z') + "\n"
+        except:
+            latex += r"\hline \multicolumn{2}{|l|}{%s} \\ \hline" % \
+                    time.strftime('%a %b %d %H:%M:%S %Y %Z').decode(_date_format_encoding()) + "\n"
+
         latex += r"\end{tabular}" + "\n"
 
         return latex
@@ -169,7 +174,12 @@ class VersionInformation(Magics):
         for name, version in self.packages:
             text += "%s %s\n" % (name, version)
 
-        text += "\n%s" % time.strftime('%a %b %d %H:%M:%S %Y %Z')
+        try:
+            text += "<tr><td colspan='2'>%s</td></tr>" % \
+                        time.strftime('%a %b %d %H:%M:%S %Y %Z')
+        except:
+            text += "<tr><td colspan='2'>%s</td></tr>" % \
+                        time.strftime('%a %b %d %H:%M:%S %Y %Z').decode(_date_format_encoding())
 
         pp.text(text)
 
