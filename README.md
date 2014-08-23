@@ -9,3 +9,8 @@ See the
 for intallation instruction and example of how to use this magic extension.
 
 
+
+License
+=======
+
+This work is licensed under a [Creative Commons Attribution 3.0 Unported License.](http://creativecommons.org/licenses/by/3.0/)
