@@ -49,11 +49,11 @@ Usage
 """
 import cgi
 import json
-import os
 import sys
 import time
 import locale
 import IPython
+import platform
 from IPython.core.magic import magics_class, line_magic, Magics
 
 try:
@@ -80,9 +80,11 @@ class VersionInformation(Magics):
             %version_information [optional comma-separated list of modules]
 
         """
-        self.packages = [("Python", sys.version.replace("\n", "")),
-                         ("IPython", IPython.__version__),
-                         ("OS", "%s [%s]" % (os.name, sys.platform))]
+        self.packages = [
+            ("Python", sys.version.replace("\n", "")),
+            ("IPython", IPython.__version__),
+            ("OS", platform.platform().replace('-', ' '))
+            ]
 
         modules = line.replace(' ', '').split(",")
 
