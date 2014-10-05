@@ -175,11 +175,10 @@ class VersionInformation(Magics):
             text += "%s %s\n" % (name, version)
 
         try:
-            text += "<tr><td colspan='2'>%s</td></tr>" % \
-                        time.strftime('%a %b %d %H:%M:%S %Y %Z')
+            text += "%s" % time.strftime('%a %b %d %H:%M:%S %Y %Z')
         except:
-            text += "<tr><td colspan='2'>%s</td></tr>" % \
-                        time.strftime('%a %b %d %H:%M:%S %Y %Z').decode(_date_format_encoding())
+            text += "%s" % \
+                time.strftime('%a %b %d %H:%M:%S %Y %Z').decode(_date_format_encoding())
 
         pp.text(text)
 
