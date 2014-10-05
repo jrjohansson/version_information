@@ -52,14 +52,11 @@ import json
 import os
 import sys
 import time
-import locale
 
 import IPython
 from IPython.core.magic import magics_class, line_magic, Magics
 
-timefmt = '%a %b %d %H:%M:%S %Y %Z'
-
-
+import locale
 def _date_format_encoding():
     return locale.getlocale(locale.LC_TIME)[1] or locale.getpreferredencoding()
 
@@ -67,7 +64,6 @@ try:
     import pkg_resources
 except ImportError:
     pkg_resources = None
-
 
 @magics_class
 class VersionInformation(Magics):
@@ -90,8 +86,7 @@ class VersionInformation(Magics):
         for module in modules:
             if len(module) > 0:
                 try:
-                    code = ("import %s; version=%s.__version__" %
-                            (module, module))
+                    code = "import %s; version=%s.__version__" % (module, module)
                     ns_g = ns_l = {}
                     exec(compile(code, "<string>", "exec"), ns_g, ns_l)
                     self.packages.append((module, ns_l["version"]))
@@ -106,12 +101,14 @@ class VersionInformation(Magics):
 
         return self
 
+
     def _repr_json_(self):
         obj = {
             'Software versions': [
                 {'module': name, 'version': version} for
                 (name, version) in self.packages]}
         return json.dumps(obj)
+
 
     def _repr_html_(self):
 
@@ -123,13 +120,14 @@ class VersionInformation(Magics):
 
         try:
             html += "<tr><td colspan='2'>%s</td></tr>" % \
-                time.strftime(timefmt)
+                        time.strftime('%a %b %d %H:%M:%S %Y %Z')
         except:
             html += "<tr><td colspan='2'>%s</td></tr>" % \
-                time.strftime(timefmt).decode(_date_format_encoding())
+                        time.strftime('%a %b %d %H:%M:%S %Y %Z').decode(_date_format_encoding())
         html += "</table>"
 
         return html
+
 
     @staticmethod
     def _latex_escape(str_):
@@ -149,6 +147,7 @@ class VersionInformation(Magics):
         }
         return u"".join([CHARS.get(c, c) for c in str_])
 
+
     def _repr_latex_(self):
 
         latex = r"\begin{tabular}{|l|l|}\hline" + "\n"
@@ -159,14 +158,15 @@ class VersionInformation(Magics):
 
         try:
             latex += r"\hline \multicolumn{2}{|l|}{%s} \\ \hline" % \
-                time.strftime(timefmt) + "\n"
+                    time.strftime('%a %b %d %H:%M:%S %Y %Z') + "\n"
         except:
             latex += r"\hline \multicolumn{2}{|l|}{%s} \\ \hline" % \
-                time.strftime(timefmt).decode(_date_format_encoding()) + "\n"
+                    time.strftime('%a %b %d %H:%M:%S %Y %Z').decode(_date_format_encoding()) + "\n"
 
         latex += r"\end{tabular}" + "\n"
 
         return latex
+
 
     def _repr_pretty_(self, pp, cycle):
 
@@ -175,10 +175,11 @@ class VersionInformation(Magics):
             text += "%s %s\n" % (name, version)
 
         try:
-            text += "%s %s\n" % time.strftime(timefmt)
+            text += "<tr><td colspan='2'>%s</td></tr>" % \
+                        time.strftime('%a %b %d %H:%M:%S %Y %Z')
         except:
-            text += "%s %s\n" % \
-                time.strftime(timefmt).decode(_date_format_encoding())
+            text += "<tr><td colspan='2'>%s</td></tr>" % \
+                        time.strftime('%a %b %d %H:%M:%S %Y %Z').decode(_date_format_encoding())
 
         pp.text(text)
 
