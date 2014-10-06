@@ -81,7 +81,10 @@ class VersionInformation(Magics):
 
         """
         self.packages = [
-            ("Python", sys.version.replace("\n", "")),
+            ("Python", "{version} {arch} [{compiler}]".format(
+                version=platform.python_version(),
+                arch=platform.architecture()[0],
+                compiler=platform.python_compiler())),
             ("IPython", IPython.__version__),
             ("OS", platform.platform().replace('-', ' '))
             ]
