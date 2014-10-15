@@ -141,7 +141,7 @@ class VersionInformation(Magics):
             '%':  r'\%',
             '$':  r'\$',
             '#':  r'\#',
-            '_':  r'\letterunderscore{}',
+            '_':  r'\_',
             '{':  r'\letteropenbrace{}',
             '}':  r'\letterclosebrace{}',
             '~':  r'\lettertilde{}',
