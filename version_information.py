@@ -115,7 +115,10 @@ class VersionInformation(Magics):
             'Software versions': [
                 {'module': name, 'version': version} for
                 (name, version) in self.packages]}
-        return json.dumps(obj)
+        if IPython.version_info[0] >= 3:
+            return obj
+        else:
+            return json.dumps(obj)
 
     def _repr_html_(self):
 
