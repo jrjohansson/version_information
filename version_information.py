@@ -94,7 +94,7 @@ class VersionInformation(Magics):
         for module in modules:
             if len(module) > 0:
                 try:
-                    code = ("import %s; version=%s.__version__" %
+                    code = ("import %s; version=str(%s.__version__)" %
                             (module, module))
                     ns_g = ns_l = {}
                     exec(compile(code, "<string>", "exec"), ns_g, ns_l)
