@@ -17,15 +17,13 @@ Operating System :: Unix
 Operating System :: Microsoft :: Windows
 """
 
-# import statements
 import os
-import sys
 from setuptools import setup
 
 NAME = "version_information"
 MAJOR = 1
 MINOR = 0
-MICRO = 0
+MICRO = 3 
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 AUTHOR = "J. Robert Johansson"
 AUTHOR_EMAIL = "jrjohansson@gmail.com"
