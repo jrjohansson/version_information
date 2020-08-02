@@ -120,12 +120,30 @@ class VersionInformation(Magics):
         else:
             return json.dumps(obj)
 
+    @staticmethod
+    def _htmltable_escape(str_):
+        CHARS = {
+            '&':  r'\&',
+            '%':  r'\%',
+            '$':  r'\$',
+            '#':  r'\#',
+            '_':  r'\_',
+            '{':  r'\letteropenbrace{}',
+            '}':  r'\letterclosebrace{}',
+            '~':  r'\lettertilde{}',
+            '^':  r'\letterhat{}',
+            '\\': r'\letterbackslash{}',
+            '>':  r'\textgreater',
+            '<':  r'\textless',
+        }
+        return u"".join([CHARS.get(c, c) for c in str_])
+
     def _repr_html_(self):
 
         html_table = "<table>"
         html_table += "<tr><th>Software</th><th>Version</th></tr>"
         for name, version in self.packages:
-            _version = html_table.escape(version)
+            _version = html_table._htmltable_escape(version)
             html_table += "<tr><td>%s</td><td>%s</td></tr>" % (name, _version)
 
         try:
