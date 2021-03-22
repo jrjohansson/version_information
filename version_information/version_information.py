@@ -47,7 +47,6 @@ Usage
    (the ``version`` field from ``setup.py``).
 
 """
-import cgi
 import html
 import json
 import sys
