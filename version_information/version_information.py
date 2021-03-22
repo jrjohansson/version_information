@@ -48,6 +48,7 @@ Usage
 
 """
 import cgi
+import html
 import json
 import sys
 import time
@@ -122,20 +123,20 @@ class VersionInformation(Magics):
 
     def _repr_html_(self):
 
-        html = "<table>"
-        html += "<tr><th>Software</th><th>Version</th></tr>"
+        html_str = "<table>"
+        html_str += "<tr><th>Software</th><th>Version</th></tr>"
         for name, version in self.packages:
-            _version = cgi.escape(version)
-            html += "<tr><td>%s</td><td>%s</td></tr>" % (name, _version)
+            _version = html.escape(version)
+            html_str += "<tr><td>%s</td><td>%s</td></tr>" % (name, _version)
 
         try:
-            html += "<tr><td colspan='2'>%s</td></tr>" % time.strftime(timefmt)
+            html_str += "<tr><td colspan='2'>%s</td></tr>" % time.strftime(timefmt)
         except:
-            html += "<tr><td colspan='2'>%s</td></tr>" % \
+            html_str += "<tr><td colspan='2'>%s</td></tr>" % \
                 time.strftime(timefmt).decode(_date_format_encoding())
-        html += "</table>"
+        html_str += "</table>"
 
-        return html
+        return html_str
 
     @staticmethod
     def _latex_escape(str_):
