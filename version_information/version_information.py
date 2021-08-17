@@ -47,7 +47,7 @@ Usage
    (the ``version`` field from ``setup.py``).
 
 """
-import cgi
+import html
 import json
 import sys
 import time
@@ -120,22 +120,40 @@ class VersionInformation(Magics):
         else:
             return json.dumps(obj)
 
+    @staticmethod
+    def _htmltable_escape(str_):
+        CHARS = {
+            '&':  r'\&',
+            '%':  r'\%',
+            '$':  r'\$',
+            '#':  r'\#',
+            '_':  r'\_',
+            '{':  r'\letteropenbrace{}',
+            '}':  r'\letterclosebrace{}',
+            '~':  r'\lettertilde{}',
+            '^':  r'\letterhat{}',
+            '\\': r'\letterbackslash{}',
+            '>':  r'\textgreater',
+            '<':  r'\textless',
+        }
+        return u"".join([CHARS.get(c, c) for c in str_])
+
     def _repr_html_(self):
 
-        html = "<table>"
-        html += "<tr><th>Software</th><th>Version</th></tr>"
+        html_table = "<table>"
+        html_table += "<tr><th>Software</th><th>Version</th></tr>"
         for name, version in self.packages:
-            _version = cgi.escape(version)
-            html += "<tr><td>%s</td><td>%s</td></tr>" % (name, _version)
+            _version = self._htmltable_escape(version)
+            html_table += "<tr><td>%s</td><td>%s</td></tr>" % (name, _version)
 
         try:
-            html += "<tr><td colspan='2'>%s</td></tr>" % time.strftime(timefmt)
+            html_table += "<tr><td colspan='2'>%s</td></tr>" % time.strftime(timefmt)
         except:
-            html += "<tr><td colspan='2'>%s</td></tr>" % \
+            html_table += "<tr><td colspan='2'>%s</td></tr>" % \
                 time.strftime(timefmt).decode(_date_format_encoding())
-        html += "</table>"
+        html_table += "</table>"
 
-        return html
+        return html_table
 
     @staticmethod
     def _latex_escape(str_):
