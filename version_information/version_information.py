@@ -49,6 +49,7 @@ Usage
 """
 import html
 import json
+import subprocess
 import sys
 import time
 import locale
@@ -70,6 +71,14 @@ def _date_format_encoding():
 
 @magics_class
 class VersionInformation(Magics):
+    
+    def get_non_python_package_version(self, package):
+        try:
+            result=subprocess.getoutput(string  + " --version")
+        except:
+            result = "not found"
+        self.packages.append((package, result))
+        
 
     @line_magic
     def version_information(self, line=''):
