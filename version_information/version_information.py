@@ -78,7 +78,27 @@ class VersionInformation(Magics):
         except:
             result = "not found"
         self.packages.append((package, result))
+
+        return self
         
+    def get_module_version(self, module):
+        try:
+            code = ("import %s; version=str(%s.__version__)" %
+                    (module, module))
+            ns_g = ns_l = {}
+            exec(compile(code, "<string>", "exec"), ns_g, ns_l)
+            self.packages.append((module, ns_l["version"]))
+        except Exception as e:
+            try:
+                if pkg_resources is None:
+                    raise
+                version = pkg_resources.require(module)[0].version
+                self.packages.append((module, version))
+            except Exception as e:
+                self.packages.append((module, str(e)))
+
+        return self
+
 
     @line_magic
     def version_information(self, line=''):
@@ -102,21 +122,7 @@ class VersionInformation(Magics):
 
         for module in modules:
             if len(module) > 0:
-                try:
-                    code = ("import %s; version=str(%s.__version__)" %
-                            (module, module))
-                    ns_g = ns_l = {}
-                    exec(compile(code, "<string>", "exec"), ns_g, ns_l)
-                    self.packages.append((module, ns_l["version"]))
-                except Exception as e:
-                    try:
-                        if pkg_resources is None:
-                            raise
-                        version = pkg_resources.require(module)[0].version
-                        self.packages.append((module, version))
-                    except Exception as e:
-                        self.packages.append((module, str(e)))
-
+                
         return self
 
     def _repr_json_(self):
