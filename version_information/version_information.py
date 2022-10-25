@@ -74,9 +74,9 @@ class VersionInformation(Magics):
     
     def get_non_python_package_version(self, package):
         try:
-            result=subprocess.getoutput(string  + " --version")
-        except:
-            result = "not found"
+            result=subprocess.getoutput(package  + " --version")
+        except Exception as e:
+            result = "Package not found " + str(e)
         self.packages.append((package, result))
 
         return self
