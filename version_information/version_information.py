@@ -122,6 +122,10 @@ class VersionInformation(Magics):
 
         for module in modules:
             if len(module) > 0:
+                if(module.startswith('!')):
+                    self.get_non_python_package_version(module[1:])
+                else:
+                    self.get_module_version(module)
                 
         return self
 
