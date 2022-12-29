@@ -49,6 +49,7 @@ Usage
 """
 import html
 import json
+import subprocess
 import sys
 import time
 import locale
@@ -70,6 +71,32 @@ def _date_format_encoding():
 
 @magics_class
 class VersionInformation(Magics):
+    
+    def get_non_python_package_version(self, package):
+        try:
+            result = subprocess.getoutput(package  + " --version")
+        except Exception as e:
+            result = "Package not found " + str(e)
+        self.packages.append((package, result))
+
+        
+    def get_module_version(self, module):
+        try:
+            code = ("import %s; version=str(%s.__version__)" %
+                    (module, module))
+            ns_g = ns_l = {}
+            exec(compile(code, "<string>", "exec"), ns_g, ns_l)
+            self.packages.append((module, ns_l["version"]))
+        except Exception as e:
+            try:
+                if pkg_resources is None:
+                    raise
+                version = pkg_resources.require(module)[0].version
+                self.packages.append((module, version))
+            except Exception as e:
+                self.packages.append((module, str(e)))
+
+
 
     @line_magic
     def version_information(self, line=''):
@@ -93,21 +120,11 @@ class VersionInformation(Magics):
 
         for module in modules:
             if len(module) > 0:
-                try:
-                    code = ("import %s; version=str(%s.__version__)" %
-                            (module, module))
-                    ns_g = ns_l = {}
-                    exec(compile(code, "<string>", "exec"), ns_g, ns_l)
-                    self.packages.append((module, ns_l["version"]))
-                except Exception as e:
-                    try:
-                        if pkg_resources is None:
-                            raise
-                        version = pkg_resources.require(module)[0].version
-                        self.packages.append((module, version))
-                    except Exception as e:
-                        self.packages.append((module, str(e)))
-
+                if(module.startswith('!')):
+                    self.get_non_python_package_version(module[1:])
+                else:
+                    self.get_module_version(module)
+                
         return self
 
     def _repr_json_(self):
