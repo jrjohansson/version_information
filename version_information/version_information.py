@@ -9,7 +9,7 @@ Produces output in:
 
 * Plaintext (IPython [qt]console)
 * HTML (IPython notebook, ``nbconvert --to html``, ``--to slides``)
-* JSON (IPython notebook ``.ipynb`` files)
+* JSON (explicit export using ``to_dict()`` or ``to_json()``)
 * LaTeX (e.g. ``ipython nbconvert example.ipynb --to LaTeX --post PDF``)
 
 Usage
@@ -127,49 +127,36 @@ class VersionInformation(Magics):
                 
         return self
 
-    def _repr_json_(self):
-        obj = {
+    def to_dict(self):
+        """Return version information as a dictionary."""
+        return {
             'Software versions': [
-                {'module': name, 'version': version} for
-                (name, version) in self.packages]}
-        if IPython.version_info[0] >= 3:
-            return obj
-        else:
-            return json.dumps(obj)
-
-    @staticmethod
-    def _htmltable_escape(str_):
-        CHARS = {
-            '&':  r'\&',
-            '%':  r'\%',
-            '$':  r'\$',
-            '#':  r'\#',
-            '_':  r'\_',
-            '{':  r'\letteropenbrace{}',
-            '}':  r'\letterclosebrace{}',
-            '~':  r'\lettertilde{}',
-            '^':  r'\letterhat{}',
-            '\\': r'\letterbackslash{}',
-            '>':  r'\textgreater',
-            '<':  r'\textless',
+                {'module': name, 'version': version}
+                for name, version in self.packages
+            ]
         }
-        return u"".join([CHARS.get(c, c) for c in str_])
+
+    def to_json(self, **kwargs):
+        """Return version information as a JSON string."""
+        return json.dumps(self.to_dict(), **kwargs)
 
     def _repr_html_(self):
-
         html_table = "<table>"
         html_table += "<tr><th>Software</th><th>Version</th></tr>"
         for name, version in self.packages:
-            _version = self._htmltable_escape(version)
-            html_table += "<tr><td>%s</td><td>%s</td></tr>" % (name, _version)
+            _name = html.escape(str(name), quote=True)
+            _version = html.escape(str(version), quote=True)
+            html_table += "<tr><td>%s</td><td>%s</td></tr>" % (
+                _name, _version
+            )
 
         try:
             html_table += "<tr><td colspan='2'>%s</td></tr>" % time.strftime(timefmt)
         except:
             html_table += "<tr><td colspan='2'>%s</td></tr>" % \
                 time.strftime(timefmt).decode(_date_format_encoding())
-        html_table += "</table>"
 
+        html_table += "</table>"
         return html_table
 
     @staticmethod
